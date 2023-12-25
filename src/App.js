@@ -40,9 +40,26 @@ const App = () => {
     setProductUrl(event.target.value);
   };
   
+  const handleDelete = async (article) => {
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/api/delete_product', {
+        article: article,
+      });
+      setProducts(products.filter(product=>product.article!==article))
+      if (response.status >= 200 && response.status < 300) {
+        console.log('Product deleted successfully');
+      } else {
+        console.error(`Error: ${response.data.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error(`Error: ${error.message || 'Unknown error'}`);
+    }
+  };
+
   const handleAddProduct = async () => {
     if (products.some(product => product.url === productUrl)) {
       alert("Такой продукт уже существует.");
+      setProductUrl('')
       return;
     }
     
@@ -83,16 +100,17 @@ const App = () => {
           placeholder="Введите ссылку на товар"
           value={productUrl}
           onChange={handleInputChange}
+          className="link-input"
         />
-        <button onClick={handleAddProduct}>Добавить товар</button>
-        <button onClick={updateData}>Обновить данные</button>
+        <button class="btn" onClick={handleAddProduct}>Добавить товар</button>
+        <button class="btn" onClick={updateData}>Обновить данные</button>
         <h1>Товары</h1>
         <div className="filtered-btn">
-          <button onClick={()=>(setFilter(0))}>Все товары</button>
-          <button onClick={()=>(setFilter(1))}>Ушли из продажи</button>
-          <button onClick={()=>(setFilter(2))}>Снова в наличии</button>
+          <button onClick={() => setFilter(0)} className={filter === 0 ? 'active btn' : 'btn'}>Все товары</button>
+          <button onClick={() => setFilter(1)} className={filter === 1 ? 'active btn' : 'btn'}>Ушли из продажи</button>
+          <button onClick={() => setFilter(2)} className={filter === 2 ? 'active btn' : 'btn'}>Снова в наличии</button>
         </div>
-        <Products products={products} filter={filter}/>
+        <Products products={products} filter={filter} handleDelete={handleDelete}/>
       </div>
     </div>
   );

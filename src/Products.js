@@ -1,6 +1,6 @@
 import "./App.css";
-
-const Products = ({products, filter}) => {
+import basket from './basket.png'
+const Products = ({products, filter, handleDelete}) => {
   let filtredProducts = [] 
   switch(filter) {
     case 1:  
@@ -43,25 +43,31 @@ const Products = ({products, filter}) => {
                 product.changed ? "changed-product" : ""
               }`}
             >
-          <a
-            href="https://my.prom.ua/cms/product"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(event) =>
-              copyArticle(event, product.article, "https://my.prom.ua/cms/product")
-            }
-          >
-            <p>Артикул: {product.article}</p>
-          </a>
-              <p>Название: {product.title}</p>
-              <p>Количество: {product.span_text}</p>
-              <p
-                className={product.stock_status == "В наявності" ? "green" : "red"}
-              >
-                Наличие: {product.stock_status}
-              </p>
+              <div>
+                <a
+                  href="https://my.prom.ua/cms/product"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(event) =>
+                    copyArticle(event, product.article, "https://my.prom.ua/cms/product")
+                  }
+                >
+                  <p>Артикул: {product.article}</p>
+                </a>
+                <p>Название: {product.title}</p>
+                <p>Количество: {product.span_text}</p>
+                <p
+                  className={product.stock_status.toLowerCase() == "в наявності" ? "green" : "red"}
+                >
+                  Наличие: {product.stock_status}
+                </p>
+              </div>
+              <div>
+                <button onClick={()=>handleDelete(product.article)} className="delete-btn">
+                  <img className='basket'src={basket} alt='basket'/>
+                </button>
+              </div>
             </div>
-            
           ))}
     </div>
   );

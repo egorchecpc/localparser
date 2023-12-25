@@ -1,12 +1,20 @@
+*{
+  margin: 5px;
+}
 .product-list {
   display: flex;
   flex-direction: column;
+  padding: 5px;
 }
 
 .product-item {
   border: 1px solid #ccc;
   margin-bottom: 10px;
-  padding: 10px;
+  padding: 10px 30px;
+  border-radius: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .green{
   color:green
@@ -14,3 +22,35 @@
 .red {
   color:red
 }
+
+.basket {
+  width: 40px;
+}
+.delete-btn {
+  background: transparent;
+  border: none;
+}
+.delete-btn:hover {
+  background-color: red;
+  border-radius: 10px;
+}
+.link-input {
+  border-radius: 30px;
+  padding: 5px;
+  margin: 10px;
+  width: 400px;
+}
+
+.btn {
+  border-radius: 20px;
+  background-color: white;
+  padding: 5px;
+}
+.btn:hover {
+  background-color: rgb(185, 185, 185);
+}
+
+.active {
+  background-color: gold;
+}
+
