@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
 import Products from "./Products";
@@ -92,6 +92,15 @@ const App = () => {
     getProducts();
   }, []); // Запустить один раз при монтировании компонента
 
+  const inputRef = useRef(null);
+  const setFocus = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+  useEffect(() => {
+    setFocus();
+  }, []);
   return (
     <div>
       <div>
@@ -101,6 +110,7 @@ const App = () => {
           value={productUrl}
           onChange={handleInputChange}
           className="link-input"
+          ref={inputRef}
         />
         <button class="btn" onClick={handleAddProduct}>Добавить товар</button>
         <button class="btn" onClick={updateData}>Обновить данные</button>
