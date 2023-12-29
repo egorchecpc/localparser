@@ -7,6 +7,7 @@ const App = () => {
   const [productUrl, setProductUrl] = useState("");
   const [products, setProducts] = useState([]);
   const [filter, setFilter] = useState(0)
+
   const fetchProducts = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:5000/api/get_products');
@@ -22,18 +23,25 @@ const App = () => {
   const updateData = async () => {
     let urlsProd = products.map((product) => product.url);
     try {
-      setProducts([])
-      await urlsProd.map(async (url) => {
-        const response = await axios.post(
-          "http://127.0.0.1:5000/api/add_product",
-          {
-            url: url,
-          }
-        );
-        setProducts((prevProducts) => [...prevProducts, response.data]);
-      })
+      setProducts([]);
+  
+      const responses = await Promise.all(
+        urlsProd.map(async (url) => {
+          const response = await axios.post(
+            "http://127.0.0.1:5000/api/add_product",
+            {
+              url: url,
+            }
+          );
+          return response.data;
+        })
+      );
+  
+      setProducts((prevProducts) => [...prevProducts, ...responses]);
+      alert('Обновление произошло успешно')
     } catch (error) {
       console.error('Error updating data:', error);
+      alert("Произошла ошибка при обновлении данных.");
     }
   };
   const handleInputChange = (event) => {
@@ -90,7 +98,7 @@ const App = () => {
 
   useEffect(() => {
     getProducts();
-  }, []); // Запустить один раз при монтировании компонента
+  }, []); 
 
   const inputRef = useRef(null);
   const setFocus = () => {
