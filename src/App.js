@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
 import Products from "./Products";
+import img from './await.png'
 
 const App = () => {
   const [productUrl, setProductUrl] = useState("");
   const [products, setProducts] = useState([]);
   const [filter, setFilter] = useState(0)
-
+  const [disabled, setDisabled] = useState(false)
+  const [onUpdate, setOnUpdate] = useState(true)
   const fetchProducts = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:5000/api/get_products');
@@ -22,25 +24,21 @@ const App = () => {
   }, [filter]);
   const updateData = async () => {
     let urlsProd = products.map((product) => product.url);
+    setDisabled(true)
+    setOnUpdate(false)
     try {
-      setProducts([]);
-  
-      const responses = await Promise.all(
-        urlsProd.map(async (url) => {
-          const response = await axios.post(
-            "http://127.0.0.1:5000/api/add_product",
-            {
-              url: url,
-            }
-          );
-          return response.data;
-        })
+      const response = await axios.post(
+        "http://127.0.0.1:5000/api/update_products",
+        {
+          products: urlsProd,
+        }
       );
   
-      setProducts((prevProducts) => [...prevProducts, ...responses]);
-      alert('Обновление произошло успешно')
+      setProducts(response.data);
+      setDisabled(false)
+      setOnUpdate(true)
     } catch (error) {
-      console.error('Error updating data:', error);
+      console.error("Error updating data:", error);
       alert("Произошла ошибка при обновлении данных.");
     }
   };
@@ -121,14 +119,22 @@ const App = () => {
           ref={inputRef}
         />
         <button class="btn" onClick={handleAddProduct}>Добавить товар</button>
-        <button class="btn" onClick={updateData}>Обновить данные</button>
+        {disabled
+        ?<button class="btn" disabled onClick={updateData}>Обновить данные</button>
+        :<button class="btn"  onClick={updateData}>Обновить данные</button>  
+      }
+        
         <h1>Товары</h1>
         <div className="filtered-btn">
           <button onClick={() => setFilter(0)} className={filter === 0 ? 'active btn' : 'btn'}>Все товары</button>
           <button onClick={() => setFilter(1)} className={filter === 1 ? 'active btn' : 'btn'}>Ушли из продажи</button>
           <button onClick={() => setFilter(2)} className={filter === 2 ? 'active btn' : 'btn'}>Снова в наличии</button>
         </div>
-        <Products products={products} filter={filter} handleDelete={handleDelete}/>
+        {onUpdate
+        ?<Products products={products} filter={filter} handleDelete={handleDelete}/>
+        :<img src={img} alt=''/>
+        }
+        
       </div>
     </div>
   );
