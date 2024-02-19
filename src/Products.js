@@ -45,12 +45,9 @@ const Products = ({products, filter, handleDelete}) => {
             >
               <div>
                 <a
-                  href="https://my.prom.ua/cms/product"
+                  href={"https://my.prom.ua/cms/product?search_term="+product.article}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={(event) =>
-                    copyArticle(event, product.article, "https://my.prom.ua/cms/product")
-                  }
                 >
                   <p>Артикул: {product.article}</p>
                 </a>
